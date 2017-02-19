@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="AndroidProcess--SNAPSHOT">
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.github.wenmingvs/AndroidProcess/-SNAPSHOT/res" />
       <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.github.wenmingvs/AndroidProcess/-SNAPSHOT/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.github.wenmingvs/AndroidProcess/-SNAPSHOT/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
