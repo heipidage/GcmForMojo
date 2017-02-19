@@ -25,7 +25,7 @@ import static com.swjtu.gcmformojo.MyFirebaseMessagingService.currentUserList;
 public class CurrentUserActivity extends AppCompatActivity {
 
     public static Handler userHandler;
-    public ListView currentUserListView;
+    private CurrentUserListView currentUserListView;
     ArrayList<User> currentUserListTest = new ArrayList<>();
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -60,7 +60,7 @@ public class CurrentUserActivity extends AppCompatActivity {
         final  String qqPackgeName=Settings.getString("edit_text_preference_qq_packgename","com.tencent.mobileqq");
         final  String wxPackgeName=Settings.getString("edit_text_preference_wx_packgename","com.tencent.mm");
 
-        currentUserListView = (ListView) findViewById(R.id.current_user_list_view);
+        currentUserListView = (CurrentUserListView) findViewById(R.id.current_user_list_view);
 
         if(currentUserList.size()==0) {
             User systemQqUser = new User("QQ机器人(未开放)","1","Mojo-Webqq","用于添加删除群消息。",curTime(),"1",1,"0");
@@ -71,7 +71,7 @@ public class CurrentUserActivity extends AppCompatActivity {
             currentUserList.add(systemUser);
         }
 
-        currentUserAdapter = new UserAdapter(CurrentUserActivity.this,R.layout.current_user_item,currentUserList);
+        currentUserAdapter = new UserAdapter(CurrentUserActivity.this,R.layout.current_user_item,currentUserList, currentUserListView);
         currentUserListView.setAdapter(currentUserAdapter);
         currentUserListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
@@ -80,39 +80,41 @@ public class CurrentUserActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                User p=(User) parent.getItemAtPosition(position);
-                Intent intentReply = new Intent(getApplicationContext(), DialogActivity.class);
-                intentReply.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intentReply.putExtra(DialogActivity.msgIdReply, p.getUserId());
-                intentReply.putExtra(DialogActivity.qqReplyUrl, qqReplyUrl);
-                intentReply.putExtra(DialogActivity.wxReplyUrl, wxReplyUrl);
-                intentReply.putExtra(DialogActivity.ReplyType, p.getSenderType());
-                intentReply.putExtra(DialogActivity.msgType, p.getUserType());
-                intentReply.putExtra(DialogActivity.messageTitle, p.getUserName());
-                intentReply.putExtra(DialogActivity.messageBody, p.getUserMessage());
-                intentReply.putExtra(DialogActivity.NotificationId, p.getNotificationId());
-                intentReply.putExtra(DialogActivity.RecivedTime, p.getUserTime());
-                intentReply.putExtra(DialogActivity.qqPackgeName, qqPackgeName);
-                intentReply.putExtra(DialogActivity.wxPackgeName, wxPackgeName);
+                if (currentUserListView.isAllowClick()) {
+                    User p = (User) parent.getItemAtPosition(position);
+                    Intent intentReply = new Intent(getApplicationContext(), DialogActivity.class);
+                    intentReply.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intentReply.putExtra(DialogActivity.msgIdReply, p.getUserId());
+                    intentReply.putExtra(DialogActivity.qqReplyUrl, qqReplyUrl);
+                    intentReply.putExtra(DialogActivity.wxReplyUrl, wxReplyUrl);
+                    intentReply.putExtra(DialogActivity.ReplyType, p.getSenderType());
+                    intentReply.putExtra(DialogActivity.msgType, p.getUserType());
+                    intentReply.putExtra(DialogActivity.messageTitle, p.getUserName());
+                    intentReply.putExtra(DialogActivity.messageBody, p.getUserMessage());
+                    intentReply.putExtra(DialogActivity.NotificationId, p.getNotificationId());
+                    intentReply.putExtra(DialogActivity.RecivedTime, p.getUserTime());
+                    intentReply.putExtra(DialogActivity.qqPackgeName, qqPackgeName);
+                    intentReply.putExtra(DialogActivity.wxPackgeName, wxPackgeName);
 
-                startActivity(intentReply);
+                    startActivity(intentReply);
+                }
             }
         });
 
-        currentUserListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent,View view,int position,long id) {
-                // TODO Auto-generated method stub
-
-                currentUserList.remove(position);
-                currentUserAdapter.notifyDataSetChanged();
-
-                return true;//当返回true时,不会触发短按事件
-                //return false;//当返回false时,会触发短按事件
-            }
-
-        });
+//        currentUserListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent,View view,int position,long id) {
+//                // TODO Auto-generated method stub
+//
+//                currentUserList.remove(position);
+//                currentUserAdapter.notifyDataSetChanged();
+//
+//                return true;//当返回true时,不会触发短按事件
+//                //return false;//当返回false时,会触发短按事件
+//            }
+//
+//        });
 
     }
 
