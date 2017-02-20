@@ -96,7 +96,7 @@ public class CurrentUserListView extends ListView {
             return;
         }
 
-        if (Math.abs(disX) > Math.abs(disY) && Math.abs(disY) < 100) {
+        if ((Math.abs(disX) - 10) > Math.abs(disY) && Math.abs(disY) < 100) {
             Log.i(TAG, "actionMove: ");
             this.setEnabled(false);
             if (isDeleteShow && nowX > mDownX) {
