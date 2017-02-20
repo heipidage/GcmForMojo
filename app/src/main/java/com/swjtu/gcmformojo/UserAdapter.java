@@ -1,13 +1,16 @@
 package com.swjtu.gcmformojo;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.View.INVISIBLE;
@@ -18,16 +21,20 @@ import static android.view.View.VISIBLE;
  * Created by HeiPi on 2017/2/14.
  */
 public class UserAdapter extends ArrayAdapter<User> {
-
+    private static final String TAG = "UserAdapter";
 
     private final int resourceId;
+    private List<User> mUserList = new ArrayList<>();
+    private CurrentUserListView mCurrentUserListView;
 
     /*
     定义构造器，在Activity创建对象Adapter的时候将数据data和Inflater传入自定义的Adapter中进行处理。
-    */
-    public UserAdapter(Context context,int textViewResourceId, List<User> objects){
+            */
+    public UserAdapter(Context context,int textViewResourceId, List<User> objects, CurrentUserListView listView){
         super(context,textViewResourceId,objects);
         resourceId=textViewResourceId;
+        mUserList = objects;
+        mCurrentUserListView = listView;
     }
 
 
@@ -38,7 +45,7 @@ public class UserAdapter extends ArrayAdapter<User> {
     }
 
     @Override
-    public View getView(int position, View convertView ,ViewGroup parent ) {
+    public View getView(final int position, View convertView , ViewGroup parent ) {
 
         User user = getItem(position);
         View viewUser;
@@ -51,12 +58,23 @@ public class UserAdapter extends ArrayAdapter<User> {
             ViewHolder.itemTime=(TextView) viewUser.findViewById(R.id.current_user_item_time);
             ViewHolder.itemMessage=(TextView) viewUser.findViewById(R.id.current_user_item_message);
             ViewHolder.itemMsgCount=(TextView) viewUser.findViewById(R.id.current_user_item_msgcount);
+            ViewHolder.itemDelete = (TextView) viewUser.findViewById(R.id.list_view_delete);
             viewUser.setTag(ViewHolder);
 
         }else {
             viewUser=convertView;
             ViewHolder = (ViewHolder)viewUser.getTag();
          }
+
+        Log.i(TAG, "deleteView: " + ViewHolder.itemDelete.isActivated());
+        ViewHolder.itemDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mUserList.remove(position);
+                notifyDataSetChanged();
+                mCurrentUserListView.hideDelete();
+            }
+        });
 
 
         //获得自定义布局中每一个控件的对象。
@@ -79,10 +97,6 @@ public class UserAdapter extends ArrayAdapter<User> {
             ViewHolder.itemMsgCount.setText(user.getMsgCount());
         }
 
-
-
-
-
         return viewUser;
     }
 
@@ -92,8 +106,7 @@ public class UserAdapter extends ArrayAdapter<User> {
         TextView itemMessage;
         TextView itemTime;
         TextView itemMsgCount;
-
-
+        TextView itemDelete;
     }
 
 }
