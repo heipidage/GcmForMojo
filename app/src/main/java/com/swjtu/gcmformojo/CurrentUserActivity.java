@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +24,7 @@ import static com.swjtu.gcmformojo.MyFirebaseMessagingService.currentUserAdapter
 import static com.swjtu.gcmformojo.MyFirebaseMessagingService.currentUserList;
 
 public class CurrentUserActivity extends AppCompatActivity {
+    private static final String TAG = "CurrentUserActivity";
 
     public static Handler userHandler;
     private CurrentUserListView currentUserListView;
@@ -80,6 +82,7 @@ public class CurrentUserActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
+                Log.i(TAG, "onItemClick");
                 if (currentUserListView.isAllowClick()) {
                     User p = (User) parent.getItemAtPosition(position);
                     Intent intentReply = new Intent(getApplicationContext(), DialogActivity.class);

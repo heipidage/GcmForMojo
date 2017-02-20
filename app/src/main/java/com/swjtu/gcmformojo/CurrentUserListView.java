@@ -3,6 +3,7 @@ package com.swjtu.gcmformojo;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -58,15 +59,26 @@ public class CurrentUserListView extends ListView {
         mDownX = (int) event.getX();
         mDownY = (int) event.getY();
         clickView = (ViewGroup) getChildAt(pointToPosition(mDownX, mDownY) - getFirstVisiblePosition());
-        if (clickView == null) {
-            return;
-        }
+
         if (isDeleteShow) {
-            if (!clickView.equals(mCurrentView)) {
+            if (clickView != null) {
+                if (!clickView.equals(mCurrentView)) {
+                    hideDelete();
+                }
+            } else if (clickView == null) {
                 hideDelete();
+                Log.i(TAG, "down:" + isDeleteShow);
+                return;
+            }
+        } else {
+            if (clickView == null) {
+                return;
+            } else if (clickView != null) {
+                isAllowClick = true;
             }
         }
 
+        Log.i(TAG, "actionDown: show");
         mCurrentView = (ViewGroup) getChildAt(pointToPosition(mDownX, mDownY) - getFirstVisiblePosition());
         mDeleteWidth = mCurrentView.getChildAt(1).getLayoutParams().width;
         mItemParam = (LinearLayout.LayoutParams) mCurrentView.getChildAt(0).getLayoutParams();
@@ -84,7 +96,9 @@ public class CurrentUserListView extends ListView {
             return;
         }
 
-        if (Math.abs(disX) > Math.abs(disY) && Math.abs(disY) < 20) {
+        if (Math.abs(disX) > Math.abs(disY) && Math.abs(disY) < 100) {
+            Log.i(TAG, "actionMove: ");
+            this.setEnabled(false);
             if (isDeleteShow && nowX > mDownX) {
                 if (disX >= mDeleteWidth) {
                     disX = mDeleteWidth;
@@ -107,13 +121,15 @@ public class CurrentUserListView extends ListView {
         if (clickView == null) {
             return;
         }
-
+        this.setEnabled(true);
         if (-mItemParam.leftMargin > mDeleteWidth / 2) {
             mItemParam.leftMargin = -mDeleteWidth;
             mCurrentView.getChildAt(0).setLayoutParams(mItemParam);
             isDeleteShow = true;
+            Log.i(TAG, "actionUp:show");
         } else {
             hideDelete();
+            Log.i(TAG, "actionUp:hide");
         }
     }
 

@@ -1,11 +1,13 @@
 package com.swjtu.gcmformojo;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import static android.view.View.VISIBLE;
  * Created by HeiPi on 2017/2/14.
  */
 public class UserAdapter extends ArrayAdapter<User> {
+    private static final String TAG = "UserAdapter";
 
     private final int resourceId;
     private List<User> mUserList = new ArrayList<>();
@@ -63,6 +66,7 @@ public class UserAdapter extends ArrayAdapter<User> {
             ViewHolder = (ViewHolder)viewUser.getTag();
          }
 
+        Log.i(TAG, "deleteView: " + ViewHolder.itemDelete.isActivated());
         ViewHolder.itemDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
