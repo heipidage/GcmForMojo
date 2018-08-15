@@ -6,38 +6,15 @@
     android:background="@drawable/dialog_bg"
     android:orientation="vertical"
     android:id="@+id/ReplyLinearLayout">
-    <!-- Title start -->
-    <RelativeLayout
-        android:id="@+id/title_relativeLayout"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:gravity="center_vertical"
-        android:clickable="true"
-        android:onClick="onTitleClick">
-        <ImageView
-            android:layout_width="23dp"
-            android:layout_height="23dp"
-            android:layout_marginLeft="5dp"
-            android:src="@mipmap/qq"
-            android:id="@+id/msgType_imageView" />
-        <TextView
-            android:id="@+id/textView_sender"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="2.0dip"
-            android:layout_alignBottom="@id/msgType_imageView"
-            android:text="测试内容"
-            android:textColor="#757575"
-            android:layout_toRightOf="@+id/msgType_imageView"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:gravity="center_vertical" />
-    </RelativeLayout>
-    <!-- Title end -->
+
+    <include layout="@layout/toolbar" />
+
     <!-- Message content start -->
     <LinearLayout
         android:id="@+id/msg_list_ll"
         android:layout_width="match_parent"
-        android:layout_height="128.0dip"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:layout_marginBottom="3.0dip"
         android:layout_marginTop="3.0dip"
         android:orientation="vertical"
@@ -45,23 +22,22 @@
         android:scrollbars="vertical">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="128.0dip"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:background="#ffffffff"
             android:scrollbars="vertical">
-            <ListView
+            <android.support.v7.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:stackFromBottom="true"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:cacheColorHint="#00000000"
                 android:divider="@null"
                 android:focusable="false"
-                android:layout_marginRight="12dp"
-                android:layout_marginLeft="12dp"
                 android:focusableInTouchMode="false"
-                android:cacheColorHint="#00000000"
                 android:listSelector="#00000000"
                 android:id="@+id/msg_list_view">
-            </ListView>
+            </android.support.v7.widget.RecyclerView>
         </LinearLayout>
     </LinearLayout>
     <TextView
@@ -87,37 +63,30 @@
         android:orientation="horizontal"
         android:paddingBottom="1dp" >
 
-  <EditText
+  <android.support.design.widget.TextInputEditText
             android:id="@+id/edittext_content"
             android:layout_width="0.0dip"
             android:layout_height="match_parent"
             android:layout_gravity="bottom"
             android:layout_marginLeft="15dp"
             android:layout_weight="1.0"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:hint="输入信息"
             android:imeOptions="actionSend"
             android:inputType="text"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:maxLines="1"
-            android:textColor="@android:color/black"
-            android:background="@null"
-            android:focusable="true"
-            android:focusableInTouchMode="true" >
+            android:textColor="@android:color/black">
             <requestFocus/>
-  </EditText>
+  </android.support.design.widget.TextInputEditText>
 
-        <LinearLayout
-            android:id="@+id/button_with_counter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageButton
-                android:id="@+id/imagebutton_send"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:background="?android:attr/selectableItemBackground"
-                android:src="@android:drawable/ic_menu_send" />
-        </LinearLayout>
+        <ImageButton
+            android:id="@+id/imagebutton_send"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:background="?android:attr/selectableItemBackground"
+            android:src="@android:drawable/ic_menu_send" />
     </LinearLayout>
 </LinearLayout>

@@ -577,9 +577,12 @@ public class MessageUtil {
              //   .setSubText(context.getString(R.string.notification_group_qq_name))
                 .setAutoCancel(true)
                 .setNumber(msgCount)
-                .setSound(defaultSoundUri)
+             //   .setSound(defaultSoundUri)
                 .setDefaults(DEFAULT_LIGHTS)
                 .setDeleteIntent(pendingIntentCancel);
+        if(!defaultSoundUri.equals("")) {
+            notificationBuilder.setSound(defaultSoundUri);
+        }
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             notificationBuilder.setColor(context.getResources().getColor(R.color.colorNotification_qq));
         }
@@ -763,9 +766,12 @@ public class MessageUtil {
              //   .setSubText(context.getString(R.string.notification_group_wechat_name))
                 .setAutoCancel(true)
                 .setNumber(msgCount)
-                .setSound(defaultSoundUri)
+             //   .setSound(defaultSoundUri)
                 .setDefaults(DEFAULT_LIGHTS)
                 .setDeleteIntent(pendingIntentCancel);
+        if(!defaultSoundUri.equals("")) {
+            notificationBuilder.setSound(defaultSoundUri);
+        }
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             notificationBuilder.setColor(context.getResources().getColor(R.color.colorNotification_wechat));
         }
@@ -928,11 +934,14 @@ public class MessageUtil {
                 .setContentText(msgBody)
             //    .setSubText(context.getString(R.string.notification_group_sys_name))
                 .setAutoCancel(true)
-                .setSound(defaultSoundUri)
+            //    .setSound(defaultSoundUri)
                 .setDefaults(defaults)
                 .setContentIntent(pendingIntent)
                 .setDeleteIntent(pendingIntentCancel);
         notificationBuilder.setPriority(Notification.PRIORITY_HIGH); //自动弹出通知
+        if(!defaultSoundUri.equals("")) {
+            notificationBuilder.setSound(defaultSoundUri);
+        }
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             notificationBuilder.setColor(context.getResources().getColor(R.color.colorPrimary));
         }

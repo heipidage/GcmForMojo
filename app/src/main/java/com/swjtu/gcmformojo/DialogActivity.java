@@ -8,6 +8,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -63,7 +67,7 @@ public class DialogActivity extends Activity implements View.OnClickListener {
 
     private View line_view;
     private EditText editText_content;
-    private ListView msgListView;
+    private RecyclerView msgListView;
     private String msgId;
     private String msgTitle;
     private String msgBody;
@@ -72,7 +76,7 @@ public class DialogActivity extends Activity implements View.OnClickListener {
     private String msgTime;
     private String wxPackgeName;
     private String qqPackgeName;
-    private static ArrayAdapter<Spanned> msgAdapter;
+    private static MsgAdapter msgAdapter;
 
     public static Handler msgHandler;
     public static int notifyId;
@@ -83,11 +87,19 @@ public class DialogActivity extends Activity implements View.OnClickListener {
 
         TextView textView_sender;
         ImageButton imageButton_send;
-        ImageView imgMsgType;
+        //ImageView imgMsgType;
 
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE); //hide activity title
-        setFinishOnTouchOutside(true);//
+        setContentView(R.layout.activity_dialog);
+        //requestWindowFeature(Window.FEATURE_NO_TITLE); //hide activity title
+        //setFinishOnTouchOutside(true);//
+        Toolbar myToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
+        myToolbar.setNavigationOnClickListener(new View.OnClickListener(){
+            public void onClick(View view){
+                finish();
+            }
+        });
 
         msgSave = MyApplication.getInstance().getMsgSave();
         currentUserList = MyApplication.getInstance().getCurrentUserList();
@@ -100,7 +112,7 @@ public class DialogActivity extends Activity implements View.OnClickListener {
 
                 if(handlerMsg.equals("UpdateMsgList") && msgAdapter!=null){
                     msgAdapter.notifyDataSetChanged();
-                    msgListView.setSelection(msgSave.get(msgId).size());
+                    //msgListView.setSelection(msgSave.get(msgId).size());
                 }
 
                 super.handleMessage(msg);
@@ -120,6 +132,14 @@ public class DialogActivity extends Activity implements View.OnClickListener {
         if(msgDialogBundle.containsKey("qqPackgeName")) qqPackgeName =msgDialogBundle.getString("qqPackgeName");
         if(msgDialogBundle.containsKey("wxPackgeName"))  wxPackgeName =msgDialogBundle.getString("wxPackgeName");
 
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setTitle("");
+            textView_sender = findViewById(R.id.toolbar_title);
+            textView_sender.setText(msgTitle);
+        }
 
         //重新计数并清除通知
         if(msgCountMap.get(notifyId)!=null)
@@ -129,7 +149,7 @@ public class DialogActivity extends Activity implements View.OnClickListener {
             notificationManager.cancel(notifyId);
         }
 
-        setContentView(R.layout.activity_dialog);
+        //setContentView(R.layout.activity_dialog);
 
         //清除列表未读计数
         for(int    i=0;    i<currentUserList.size();    i++){
@@ -146,9 +166,10 @@ public class DialogActivity extends Activity implements View.OnClickListener {
         Boolean qqIsReply=mySettings.getBoolean("check_box_preference_qq_reply",false);
         Boolean wxIsReply=mySettings.getBoolean("check_box_preference_wx_reply",false);
 
-        textView_sender = (TextView) findViewById(R.id.textView_sender);
-        msgListView = (ListView) findViewById(R.id.msg_list_view);
-        imgMsgType = (ImageView) findViewById(R.id.msgType_imageView);
+        //textView_sender = (TextView) findViewById(R.id.textView_sender);
+        msgListView = findViewById(R.id.msg_list_view);
+        msgListView.setLayoutManager(new LinearLayoutManager(this));
+        //imgMsgType = (ImageView) findViewById(R.id.msgType_imageView);
         imageButton_send = (ImageButton) findViewById(R.id.imagebutton_send);
         editText_content = (EditText) findViewById(R.id.edittext_content);
         LinearLayout msgListLinearLayout = (LinearLayout) findViewById(R.id.msg_list_ll);
@@ -171,7 +192,7 @@ public class DialogActivity extends Activity implements View.OnClickListener {
 
         switch (msgType){
             case QQ:
-                imgMsgType.setImageResource(R.mipmap.qq);
+                getSupportActionBar().setIcon(R.mipmap.qq);
                 if(!qqIsReply) {
                     imageButton_send.setEnabled(false);
                     editText_content.setEnabled(false);
@@ -196,7 +217,7 @@ public class DialogActivity extends Activity implements View.OnClickListener {
                 },300);
                 break;
             case WEIXIN:
-                imgMsgType.setImageResource(R.mipmap.weixin);
+                getSupportActionBar().setIcon(R.mipmap.weixin);
                 if(!wxIsReply) {
                     imageButton_send.setEnabled(false);
                     editText_content.setEnabled(false);
@@ -224,18 +245,18 @@ public class DialogActivity extends Activity implements View.OnClickListener {
                 //系统消息中的QQ和微信服务通知图标
                 switch (msgId) {
                     case "0":
-                        imgMsgType.setImageResource(R.mipmap.pin);
+                        getSupportActionBar().setIcon(R.mipmap.pin);
                         imageButton_send.setEnabled(false);
                         editText_content.setEnabled(false);
                         break;
                     case "1":
-                        imgMsgType.setImageResource(R.mipmap.qq);
+                        getSupportActionBar().setIcon(R.mipmap.qq);
                         break;
                     case "2":
-                        imgMsgType.setImageResource(R.mipmap.weixin);
+                        getSupportActionBar().setIcon(R.mipmap.weixin);
                         break;
                     default:
-                        imgMsgType.setImageResource(R.mipmap.pin);
+                        getSupportActionBar().setIcon(R.mipmap.pin);
                 }
                 editText_content.setHint(R.string.text_system_control);
                 editText_content.clearFocus();
@@ -262,14 +283,12 @@ public class DialogActivity extends Activity implements View.OnClickListener {
            if(!msgBody.equals(getString(R.string.text_chat_initiative))) {
                msgList.add(toSpannedMessage(str + msgBody));
 
-           }else {
-               msgList.add(toSpannedMessage(""));
            }
            msgSave.put(msgId, msgList);
         }
 
-        textView_sender.setText(msgTitle); //弹窗标题
-        msgAdapter = new ArrayAdapter<>(DialogActivity.this,R.layout.dialog_msglist_item,R.id.text_message_item,msgSave.get(msgId));
+        //textView_sender.setText(msgTitle); //弹窗标题
+        msgAdapter = new MsgAdapter(msgSave, msgId);
         msgListView.setAdapter(msgAdapter);
 
 
@@ -365,7 +384,7 @@ public class DialogActivity extends Activity implements View.OnClickListener {
         //将发送信息加入聊天记录
         Spanned mySendMsg;
         String str = getColorMsgTime(msgType,true);
-        mySendMsg=toSpannedMessage( str + isSucess + editText_content.getText().toString());
+        mySendMsg=toSpannedMessage( str + isSucess + editText_content.getText().toString() + "////send");
         if(msgSave.get(msgId)==null) {
             List<Spanned> msgList = new ArrayList<>();
             msgList.add(mySendMsg);
@@ -391,7 +410,7 @@ public class DialogActivity extends Activity implements View.OnClickListener {
             new userThread().start();
 
         msgAdapter.notifyDataSetChanged();
-        msgListView.setSelection(msgSave.get(msgId).size());
+        //msgListView.setSelection(msgSave.get(msgId).size());
 
         //系统控制处理
         String content = editText_content.getText().toString().toLowerCase();
