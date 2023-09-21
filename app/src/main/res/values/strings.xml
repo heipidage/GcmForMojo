@@ -192,6 +192,9 @@
     <string name="text_control_help">目前支持命令：\n\t(1)relogin - 重新登录\n\t（2）stop - 停止服务端</string>
     <string name="text_control_unsupported">不支持的命令，如需查看命令列表，请输入help。</string>
     <string name="text_control_unsupported_short">不支持的命令</string>
+    <string name="qq_contacts">QQ 联系人</string>
+    <string name="wx_contacts">微信联系人</string>
+
 
 
 </resources>

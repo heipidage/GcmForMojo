@@ -2,6 +2,7 @@ package com.swjtu.gcmformojo;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,93 +21,90 @@ import static com.swjtu.gcmformojo.MyApplication.WEIXIN;
  * 消息列表适配器
  * Created by HeiPi on 2017/2/14.
  */
-public class UserAdapter extends ArrayAdapter<User> {
+public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> implements View.OnClickListener {
 
 
-    private final int resourceId;
+    private List<User> objects;
+    private OnItemClickListener mOnItemClickListener = null;
 
     /*
     定义构造器，在Activity创建对象Adapter的时候将数据data和Inflater传入自定义的Adapter中进行处理。
     */
-    public UserAdapter(Context context,int textViewResourceId, List<User> objects){
-        super(context,textViewResourceId,objects);
-        resourceId=textViewResourceId;
-    }
-
-
-
-    @Override
-    public long getItemId(int position) {
-        return position;
+    public UserAdapter(List<User> objects) {
+        this.objects = objects;
     }
 
     @NonNull
     @Override
-    public View getView(int position, View convertView , @NonNull ViewGroup parent ) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.current_userlist_item, parent, false);
+        ViewHolder holder = new ViewHolder(view);
+        view.setOnClickListener(this);
+        return holder;
+    }
 
-        User user = getItem(position);
-        View viewUser;
-        ViewHolder ViewHolder;
-        if(convertView == null) {
-            viewUser=LayoutInflater.from(getContext()).inflate(resourceId,null);
-            ViewHolder = new ViewHolder();
-            ViewHolder.itemType=(ImageView) viewUser.findViewById(R.id.current_user_item_type);
-            ViewHolder.itemName=(TextView) viewUser.findViewById(R.id.current_user_item_name);
-            ViewHolder.itemTime=(TextView) viewUser.findViewById(R.id.current_user_item_time);
-            ViewHolder.itemMessage=(TextView) viewUser.findViewById(R.id.current_user_item_message);
-            ViewHolder.itemMsgCount=(TextView) viewUser.findViewById(R.id.current_user_item_msgcount);
-            viewUser.setTag(ViewHolder);
-
-        }else {
-            viewUser=convertView;
-            ViewHolder = (ViewHolder)viewUser.getTag();
-         }
-
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        User user = objects.get(position);
 
         //获得自定义布局中每一个控件的对象。
         assert user != null;
         switch (user.getUserType()) {
             case QQ:
-                ViewHolder.itemType.setImageResource(R.mipmap.qq_ico);
+                holder.itemType.setImageResource(R.mipmap.qq_ico);
                 break;
             case WEIXIN:
-                ViewHolder.itemType.setImageResource(R.mipmap.weixin_ico);
+                holder.itemType.setImageResource(R.mipmap.weixin_ico);
                 break;
             default:
                 switch (user.getUserId()) {
                     case "0":
-                        ViewHolder.itemType.setImageResource(R.mipmap.message);
+                        holder.itemType.setImageResource(R.mipmap.message);
                         break;
                     case "1":
-                        ViewHolder.itemType.setImageResource(R.mipmap.qq_ico);
+                        holder.itemType.setImageResource(R.mipmap.qq_ico);
                         break;
                     case "2":
-                        ViewHolder.itemType.setImageResource(R.mipmap.weixin_ico);
+                        holder.itemType.setImageResource(R.mipmap.weixin_ico);
                         break;
                     default:
-                        ViewHolder.itemType.setImageResource(R.mipmap.message);
+                        holder.itemType.setImageResource(R.mipmap.message);
                 }
         }
 
-        ViewHolder.itemName.setText(user.getUserName());
-        ViewHolder.itemTime.setText(user.getUserTime().substring(5));
-        ViewHolder.itemMessage.setText(user.getUserMessage());
+        holder.itemName.setText(user.getUserName());
+        holder.itemTime.setText(user.getUserTime().substring(5));
+        holder.itemMessage.setText(user.getUserMessage());
 
         if(user.getMsgCount().equals("0")){
-            ViewHolder.itemMsgCount.setVisibility(INVISIBLE);
+            holder.itemMsgCount.setVisibility(INVISIBLE);
         }else {
-            ViewHolder.itemMsgCount.setVisibility(VISIBLE);
-            ViewHolder.itemMsgCount.setText(user.getMsgCount());
+            holder.itemMsgCount.setVisibility(VISIBLE);
+            holder.itemMsgCount.setText(user.getMsgCount());
         }
 
-
-
-
-
-        return viewUser;
     }
 
-    class ViewHolder {
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+    @Override
+    public int getItemCount() {
+        return objects.size();
+    }
+    @Override
+    public void onClick(View v) {
+        if (mOnItemClickListener != null) {
+            //注意这里使用getTag方法获取position
+            mOnItemClickListener.onItemClick(v,(int)v.getTag());
+        }
+    }
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.mOnItemClickListener = listener;
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder{
         ImageView itemType;
         TextView itemName;
         TextView itemMessage;
@@ -114,6 +112,19 @@ public class UserAdapter extends ArrayAdapter<User> {
         TextView itemMsgCount;
 
 
+        public ViewHolder(View itemView) {
+            super(itemView);
+            itemType = itemView.findViewById(R.id.current_user_item_type);
+            itemName = itemView.findViewById(R.id.current_user_item_name);
+            itemMessage = itemView.findViewById(R.id.current_user_item_message);
+            itemTime = itemView.findViewById(R.id.current_user_item_time);
+            itemMsgCount = itemView.findViewById(R.id.current_user_item_msgcount);
+        }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view , int position);
+        boolean onItemLongClick(View view, int position);
     }
 
 }

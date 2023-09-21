@@ -8,6 +8,8 @@ import android.content.pm.ShortcutManager;
 import android.os.Build;
 import android.os.Bundle;
 //import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -47,6 +49,19 @@ public class QqContactsActivity extends Activity implements View.OnClickListener
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qq_contacts);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitle(R.string.qq_contacts);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener(){
+            public void onClick(View view){
+                finish();
+            }
+        });
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(true);
+        }
 
         qqFriendArrayList = MyApplication.getInstance().getQqFriendArrayList();
         qqFriendGroups = MyApplication.getInstance().getQqFriendGroups();

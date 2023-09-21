@@ -113,8 +113,7 @@
         </activity>
         <activity
             android:name=".DialogActivity"
-            android:theme="@style/MyDialog"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="stateUnspecified" />
         <activity
             android:name=".HelpActivity"
             android:label="@string/title_activity_help"
@@ -125,8 +124,7 @@
                 android:value=".CurrentUserActivity" />
         </activity>
         <activity
-            android:name=".TokenActivity"
-            android:theme="@style/MyDialog">
+            android:name=".TokenDialog">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -149,8 +147,7 @@
             android:value=".CurrentUserActivity" />
         </activity>
         <activity
-            android:name=".QqPausedNotificationActivity"
-            android:theme="@style/MyDialog"></activity>
+            android:name=".QqPausedNotificationActivity"/>
         <activity
             android:name=".WechatContactsActivity"
             android:label="@string/title_activity_wechat_contacts"

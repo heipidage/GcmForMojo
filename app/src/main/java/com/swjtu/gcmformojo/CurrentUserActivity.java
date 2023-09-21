@@ -10,6 +10,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,7 +45,7 @@ public class CurrentUserActivity extends Activity {
 
     private ArrayList<User> currentUserList;
     public static Handler userHandler;
-    public ListView currentUserListView;
+    public RecyclerView currentUserListView;
     public UserAdapter currentUserAdapter;
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -55,9 +59,12 @@ public class CurrentUserActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_current_user);
+        Toolbar myToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
         getOverflowMenu();
 
-        currentUserList = MyApplication.getInstance().getCurrentUserList();
+        currentUserListView = findViewById(R.id.current_user_list_view);
+        currentUserListView.setLayoutManager(new LinearLayoutManager(this));
 
         verifyStoragePermissions(this);
 
@@ -120,21 +127,17 @@ public class CurrentUserActivity extends Activity {
 
         }
 
-        currentUserListView = (ListView) findViewById(R.id.current_user_list_view);
-
         addNotfiyContent();
 
-        currentUserAdapter = new UserAdapter(CurrentUserActivity.this,R.layout.current_userlist_item,currentUserList);
+        currentUserAdapter = new UserAdapter(currentUserList);
         currentUserListView.setAdapter(currentUserAdapter);
-        currentUserListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        //currentUserListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
 
-        currentUserListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
+        currentUserAdapter.setOnItemClickListener(new UserAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                User p=(User) parent.getItemAtPosition(position);
+            public void onItemClick(View view, int position) {
+                User p=currentUserList.get(position);
                 Intent intentSend = new Intent(getApplicationContext(), DialogActivity.class);
                 intentSend.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
@@ -154,9 +157,6 @@ public class CurrentUserActivity extends Activity {
 
                 startActivity(intentSend);
             }
-        });
-
-        currentUserListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent,View view,int position,long id) {
@@ -253,8 +253,8 @@ public class CurrentUserActivity extends Activity {
                 startActivity(intentHelp);
                 break;
             case R.id.action_token:
-                Intent intentToken = new Intent(this, TokenActivity.class);
-                startActivity(intentToken);
+                DialogFragment newFragment = new TokenDialog();
+                newFragment.show(getSupportFragmentManager(), "token");
                 break;
             default:
                 return super.onOptionsItemSelected(item);
